@@ -12,26 +12,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://unpkg.com/vue@next" defer></script>
 </head>
 <body>
-    <div class="container-flex">
-        <div class="row justify-content-center mt-4">
-            <div class="col col-8">
-                <form action="">
-                    <div class="form-group">
-                        <label for="firstname">Name</label>
+    <div class="container-flex" >
+        <div class="row justify-content-center mt-4 mb-4" >
+            <div class="col col-10 col-sm-10 col-md-10 col-lg-8 col-xl-6  shadow" id="form-box">
+                <form action="" class="" style="text-align: center;">
+                    <div class="form-group w-75 mx-auto">
+                        <label for="firstname">Firstname</label>
                         <input type="text" class="form-control" id="firstname" placeholder="Enter your firstname">
                     </div>
-                    <div class="form-group">
-                        <label for="lastname">Name</label>
+                    <div class="form-group w-75 mx-auto">
+                        <label for="lastname">Lastname</label>
                         <input type="text" class="form-control" id="lastname" placeholder="Enter your lastname">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group w-75 mx-auto">
                         <label for="email">Email</label>
                         <input type="email" class="form-control" id="email" placeholder="something@something.com" aria-describedby="email">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group w-75 mx-auto">
                         <label for="sex">Sex</label>
                         <select class="form-control" id="sex">
                             <option value="m">Male</option>
@@ -40,19 +39,52 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label for="datepicker">Set date</label>
+                    <div class="form-group w-75 mx-auto">
+                        <label for="datepicker">Pick your birth date</label><br>
                         <input type="date" id="datepicker" name="datepicker">
                     </div>
 
-                    <div class="input-group">
+                    <div class="input-group mb-3 w-75 mx-auto">
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="image">
-                            <label for="image" class="custom-file-label"></label>
+                            <label for="image" class="custom-file-label">Optional - Choose an image</label>
+                            <input type="file" class="custom-file-input" id="image" name="image">
                         </div>
                     </div>
+                    <img src="user-2935373_960_720.png" alt="" id="avatar"><br>
+                    
                     <button class="btn btn-success" type="Submit">Submit</button>
+                    <button class="btn btn-warning">Clear</button>
+                    
                 </form>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col col-10">
+                <table class="table">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Firstname</th>
+                        <th scope="col">lastname</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Sex</th>
+                        <th scope="col">Birthday</th>
+                        <th scope="col">Avatar</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row" id="numbering">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                        <td>Male</td>
+                        <td>Birthday</td>
+                        <td>Picture</td>
+                      </tr>
+                    </tbody>
+                  </table>
             </div>
         </div>
     </div>
@@ -63,7 +95,6 @@
             $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
         });
 
-        let app = Vue
     </script>
 </body>
 </html>
