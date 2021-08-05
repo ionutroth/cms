@@ -5,6 +5,7 @@
     border-style: solid;
     border-color: green;
     border-width: 1px;
+    text-align: center;
 }
 
 body{
@@ -23,4 +24,12 @@ td,#numbering{
     border-color: black;
     border-style: solid;
     margin-bottom: 3%;
+}
+
+.txt-input{
+    width:80%;
+    border-radius: 5px;
+    border-style: solid;
+    border-color: lightgrey;
+    border-width: 1px;
 }
