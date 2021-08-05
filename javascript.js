@@ -1,15 +1,8 @@
-// $(".custom-file-input").on("change", function(){
-//     var fileName = $(this).val().split("\\").pop();
-//     console.log(fileName);
-//     $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-// });
-
 const app = Vue.createApp({
     data(){
         return {
-            plm: [1,2,3,4],
             persons:[
-                {firstname:"Bond", lastname:"James", email:"james@bond.com", sex:"y", date:"2021-08-17"}
+                {firstname:"Bond", lastname:"James", email:"james@bond.com", sex:"y", date:"2021 July 17"}
             ],
             firstname:"",
             lastname:"",
@@ -109,9 +102,27 @@ const app = Vue.createApp({
                 this.dateVerification = "false";
                 console.log("date error")
             }
+
+            let months = {
+                "01":"January",
+                "02":"February",
+                "03":"March",
+                "04":"April",
+                "05":"May",
+                "06":"June",
+                "07":"July",
+                "08":"August",
+                "09":"September",
+                "10":"October",
+                "11":"November",
+                "12":"December"
+            };
+
+            let formatedDate = this.date.split("-")[0] + " " + months[this.date.split("-")[1]] + " " + this.date.split("-")[2];
+
             if ((this.dateVerification == "true")&&(this.emailVerification == "true")&&(this.lastnameVerification == "true")&&(this.firstnameVerification == "true")){
                 console.log(this.firstname,this.lastname,this.email,this.sex, this.date)
-                this.persons.push({firstname: this.firstname, lastname: this.lastname, email:this.email, sex:this.sex, date:this.date});
+                this.persons.push({firstname: this.firstname, lastname: this.lastname, email:this.email, sex:this.sex, date:formatedDate});
                 console.log(this.persons[1]);
             }else{
                 console.log("error")
