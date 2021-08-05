@@ -19,5 +19,8 @@ td,#numbering{
     width:250px;
     height: 250px;
     border-radius: 50%;
+    border-width: 2px;
+    border-color: black;
+    border-style: solid;
     margin-bottom: 3%;
 }
