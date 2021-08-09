@@ -33,3 +33,7 @@ td,#numbering{
     border-color: lightgrey;
     border-width: 1px;
 }
+
+.btn-group{
+    padding: 0px;
+}
