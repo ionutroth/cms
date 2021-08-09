@@ -15,15 +15,15 @@
             <div class="col col-10 col-sm-10 col-md-10 col-lg-8 col-xl-6  shadow" id="form-box">
                 <div class="form-group w-75 mx-auto">
                     <label for="firstname">Firstname</label>
-                    <input type="text" v-model="firstname" class="form-control" id="firstname" placeholder="Enter your firstname">
+                    <input type="text" v-model="firstname" class="form-control" id="firstname" placeholder="Enter your firstname" required>
                 </div>
                 <div class="form-group w-75 mx-auto">
                     <label for="lastname">Lastname</label>
-                    <input type="text" v-model="lastname" class="form-control" id="lastname" placeholder="Enter your lastname">
+                    <input type="text" v-model="lastname" class="form-control" id="lastname" placeholder="Enter your lastname" required>
                 </div>
                 <div class="form-group w-75 mx-auto">
                     <label for="email">Email</label>
-                    <input type="email" v-model="email" class="form-control" id="email" placeholder="something@something.com" aria-describedby="email">
+                    <input type="email" v-model="email" class="form-control" id="email" placeholder="something@something.com" aria-describedby="email" required>
                 </div>
                 <div class="form-group w-75 mx-auto">
                     <label for="sex">Sex</label>
@@ -50,51 +50,54 @@
                 <button class="btn btn-warning" v-on:click="clearContent()">Clear</button>
             </div>
         </div>
-        <div class="row justify-content-center">
-            <div class="col col-11">
+        <div class="row justify-content-center mb-3">
+            <div class="col col-11 shadow-lg" style="overflow-x:scroll;padding-left:0px;padding-right:0px">
                 <table class="table">
                     <thead class="thead-dark">
                       <tr>
                         <th scope="col">Nr.</th>
-                        <th scope="col">Firstname <br>
+                        <th scope="col" style="width:170px">Firstname <br>
                             <div class="btn-group">
                                 <button class="btn btn-light" v-on:click="sortColumnFirstname">Sort</button>
                                 <button class="btn btn-primary" v-on:click="searchFirstname">Search</button>
                             </div>
-                            <input type="text" id="firstnameinput" style="width:100px">
+                            <input type="text" id="firstnameinput" >
                         </th>
-                        <th scope="col">Lastname <br>
+                        <th scope="col" style="width:170px">Lastname <br>
                             <div class="btn-group">
                                 <button class="btn btn-light" v-on:click="sortColumnLastname">Sort</button>
                                 <button class="btn btn-primary" v-on:click="searchLastname">Search</button>
                             </div>
-                            <input type="text" id="lastnameinput" style="width:100px">
+                            <input type="text" id="lastnameinput" >
                         </th>
-                        <th scope="col">Email <br>
+                        <th scope="col" style="width:170px">Email <br>
                             <div class="btn-group">
                                 <button class="btn btn-light" v-on:click="sortColumnEmail">Sort</button>
                                 <button class="btn btn-primary" v-on:click="searchEmail">Search</button>
                             </div>
-                            <input type="text" id="emailinput" style="width:100px">
+                            <input type="text" id="emailinput">
                         </th>
-                        <th scope="col">Sex <br>
+                        <th scope="col" style="width:170px">Sex <br>
                             <div class="btn-group">
                                 <button class="btn btn-light" v-on:click="sortColumnSex">Sort</button>
-                                <button class="btn btn-light" v-on:click="selectMale">m</button>
-                                <button class="btn btn-light" v-on:click="selectFemale">f</button>
+                                <button class="btn btn-primary" v-on:click="selectMale">m</button>
+                                <button class="btn btn-danger" v-on:click="selectFemale">f</button>
                             </div>
                         </th>
-                        <th scope="col">Birthday <br>
+                        <th scope="col" style="width:200px">Birthday <br>
                             <div class="btn-group">
                                 <button class="btn btn-light" v-on:click="sortColumnBirthday">Sort</button>
                                 <button class="btn btn-primary" v-on:click="searchBirthday">Search</button>
+                            </div> <br>
+                            <div >
+                                <input type="number" id="start"  placeholder="Start">
+                                <input type="number" id="stop" placeholder="Stop">
                             </div>
-                            <input type="text" id="start" style="width:70px" placeholder="Start">
-                            <input type="text" id="stop" style="width:70px" placeholder="Stop">
+                            
                         </th>
                         
-                        <th scope="col">Avatar</th>
-                        <th scole="col">Actions</th>
+                        <th scope="col" style="width:100px">Avatar</th>
+                        <th scole="col" style="width:100px">Actions</th>
                       </tr>
                     </thead>
                     <tbody>

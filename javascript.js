@@ -354,9 +354,9 @@ const app = Vue.createApp({
         searchFirstname(){
             var rowsArray = [];
             var tablecopy = this.persons;
-            var selection = document.getElementById("firstnameinput").value;
+            var selection = document.getElementById("firstnameinput").value.toLowerCase();
             this.persons.forEach(function(person, index){
-                if(person.firstname.search(selection) != -1){
+                if(person.firstname.toLowerCase().search(selection) != -1){
                     rowsArray.push(tablecopy[index])
                 }
             })
@@ -369,9 +369,9 @@ const app = Vue.createApp({
         searchLastname(){
             var rowsArray = [];
             var tablecopy = this.persons;
-            var selection = document.getElementById("lastnameinput").value;
+            var selection = document.getElementById("lastnameinput").value.toLowerCase();
             this.persons.forEach(function(person, index){
-                if(person.lastname.search(selection) != -1){
+                if(person.lastname.toLowerCase().search(selection) != -1){
                     rowsArray.push(tablecopy[index])
                 }
             })
@@ -384,9 +384,9 @@ const app = Vue.createApp({
         searchEmail(){
             var rowsArray = [];
             var tablecopy = this.persons;
-            var selection = document.getElementById("emailinput").value;
+            var selection = document.getElementById("emailinput").value.toLowerCase();
             this.persons.forEach(function(person, index){
-                if(person.email.search(selection) != -1){
+                if(person.email.toLowerCase().search(selection) != -1){
                     rowsArray.push(tablecopy[index])
                 }
             })

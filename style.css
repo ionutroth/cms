@@ -6,6 +6,7 @@
     border-color: green;
     border-width: 1px;
     text-align: center;
+    min-width:450px
 }
 
 body{
@@ -36,4 +37,28 @@ td,#numbering{
 
 .btn-group{
     padding: 0px;
+}
+
+.table{
+    min-width:1050px;
+    padding-bottom:0px;
+    margin-bottom: 0px;
+    margin-left:0px;
+    
+}
+
+ #emailinput, #lastnameinput, #firstnameinput{
+    border-radius: 10%;
+    outline: none;
+    width:130px;
+    display: inline; 
+    float:left
+}
+
+#stop, #start{
+    border-radius: 10%;
+    outline: none;
+    width:70px;
+    display: inline; 
+    float:left
 }
