@@ -1,12 +1,24 @@
+const firebaseConfig = {
+    apiKey: "AIzaSyDgjhup4oLJqvFuyiqe89cx1Jm4FOJcVGY",
+    authDomain: "cms-project-eda4c.firebaseapp.com",
+    projectId: "cms-project-eda4c",
+    storageBucket: "cms-project-eda4c.appspot.com",
+    messagingSenderId: "605487698777",
+    appId: "1:605487698777:web:390ade14444d9c9f7b7248"
+};
+
+firebase.initializeApp(firebaseConfig);
+
 const app = Vue.createApp({
     data(){
         return {
-            persons:[
-                {firstname:"Bond", lastname:"James", email:"james@bond.com", sex:"y", date:"1999 July 17"},
-                {firstname:"Trump", lastname:"Donald", email:"trump@maga.com", sex:"d", date:"1970 April 17"},
-                {firstname:"Alah", lastname:"Akbar", email:"mia@khalifa.com", sex:"f", date:"1969 March 17"},
-                {firstname:"Alah", lastname:"Aakbar", email:"memri@tv.com", sex:"m", date:"2020 Jan 17"}
-            ],
+            // persons:[
+            //     {firstname:"Bond", lastname:"James", email:"james@bond.com", sex:"y", date:"1999 July 17", image:"C:\\Users\\IonutRoth\\Documents\\GitHub\\cms\\user-2935373_960_720.png"},
+            //     {firstname:"Trump", lastname:"Donald", email:"trump@maga.com", sex:"d", date:"1970 April 17", image:"C:\\Users\\IonutRoth\\Documents\\GitHub\\cms\\user-2935373_960_720.png"},
+            //     {firstname:"Alah", lastname:"Akbar", email:"mia@khalifa.com", sex:"f", date:"1969 March 17", image:"C:\\Users\\IonutRoth\\Documents\\GitHub\\cms\\user-2935373_960_720.png"},
+            //     {firstname:"Alah", lastname:"Aakbar", email:"memri@tv.com", sex:"m", date:"2020 Jan 17", image:"C:\\Users\\IonutRoth\\Documents\\GitHub\\cms\\user-2935373_960_720.png"}
+            // ],
+            persons:[],
             sortedPersons:[],
             sorting:false,
             sortingCurrently:"",
@@ -20,7 +32,8 @@ const app = Vue.createApp({
             firstnameVerification:"false",
             lastnameVerification:"false",
             emailVerification:"false",
-            dateVerification:"false"
+            dateVerification:"false",
+            testarray:[]
         };
     },
     methods:{
@@ -69,7 +82,7 @@ const app = Vue.createApp({
                 verification4="false";
                 console.log("v4 error");
             }
-            if ((verification3 == "true") && (verification4=="true")){
+            if ((verification3 == "true") && (verification4 == "true")){
                 this.lastnameVerification = "true";
             }else{
                 this.lastnameVerification = "false"
@@ -88,7 +101,6 @@ const app = Vue.createApp({
                 console.log("v6 error", this.email, emailAtChar);
             }else{
                 verification6="true";
-                console.log("v6 success", this.email, emailAtChar);
             }
             if (this.email.length > 4){
                 verification7="true";
@@ -125,14 +137,26 @@ const app = Vue.createApp({
             };
 
             let formatedDate = this.date.split("-")[0] + " " + months[this.date.split("-")[1]] + " " + this.date.split("-")[2];
-
+            
             if ((this.dateVerification == "true")&&(this.emailVerification == "true")&&(this.lastnameVerification == "true")&&(this.firstnameVerification == "true")){
-                console.log(this.firstname,this.lastname,this.email,this.sex, this.date)
+                // console.log(this.firstname,this.lastname,this.email,this.sex, this.date, this.image);
                 this.persons.push({firstname: this.firstname, lastname: this.lastname, email:this.email, sex:this.sex, date:formatedDate, image:this.image});
-                console.log(this.persons[1]);
+                var selectedFile = document.querySelector('input[type=file]').files[0];
+                var reader = new FileReader();
+                reader.onload = function(e){
+                    this.persons[this.persons.length - 1].image = e.target.result;
+                }.bind(this);
+                reader.onerror = function(error){
+                    alert(error);
+                }
+                reader.readAsDataURL(selectedFile);
+                console.log(this.image)
+                this.addToDB();
+                this.persons = [];
+                this.selectFromDB();
                 this.clearContent();
             }else{
-                console.log("error")
+                console.log("error");
             }
         },
 
@@ -142,25 +166,25 @@ const app = Vue.createApp({
             this.email="";
             this.date="";
             this.image="C:\\Users\\IonutRoth\\Documents\\GitHub\\cms\\user-2935373_960_720.png";
-            this.sex="m"
+            this.sex="m";
         },
 
-        deleteContent(index){
-            this.persons.splice(index,1);
+        deleteSortedContent(index, ogIndex){
+            this.persons.splice(ogIndex,1);
+            this.sortedPersons.splice(index,1);
         },
 
         uploadImage: function(){
             var selectedFile = document.querySelector('input[type=file]').files[0];
             var reader = new FileReader();
             reader.onload = function(e){
-                this.image = e.target.result
-                console.log(this.image)
-            };
+                this.image = e.target.result;
+                document.getElementById("avatar").src=this.image;
+            }.bind(this);
             reader.onerror = function(error){
                 alert(error);
             };
             reader.readAsDataURL(selectedFile);
-            console.log(this.image)
         },
 
         sortColumnFirstname(){
@@ -178,6 +202,9 @@ const app = Vue.createApp({
             rowsArray2.forEach(function (item){
                 rowsArray3.push(tablecopy[item])
             });
+            rowsArray3.forEach(function (element, index){
+                element.ogIndex = rowsArray2[index];
+            });
             this.sortedPersons = JSON.parse(JSON.stringify(rowsArray3))
             if (this.sortingCurrently == "firstname"){
                 this.sorting = !this.sorting;
@@ -190,6 +217,7 @@ const app = Vue.createApp({
                 }
                 console.log(this.sortingCurrently, this.sorting)
             }
+            console.log(this.sortedPersons[0])
         },
 
         sortColumnLastname(){
@@ -411,36 +439,71 @@ const app = Vue.createApp({
             if (this.sorting == false){
                 this.sorting = !this.sorting
             }
+        },
+
+        addToDB(){
+            let cloudDB = firebase.firestore();
+            cloudDB.collection("Persons").add({
+                firstname: this.firstname,
+                lastname: this.lastname,
+                email: this.email,
+                sex: this.sex,
+                date: this.date,
+                image: this.image
+                }
+            ).then(function (docRef){
+                console.log("written with Id:",docRef.id)
+                }
+            ).catch(function(error){
+                console.error("eroare", error)
+            })
+        },
+        
+        async selectFromDB(){
+            let db = firebase.firestore();
+            const snapshot = await db.collection("Persons").get()
+            return snapshot.docs.map(doc => {
+                this.persons.push(doc.data());
+                this.persons[this.persons.length - 1].dbId = doc.id;
+                console.log(this.persons);
+            })
+        },
+
+        cevaaa(){
+            console.log(this.persons[this.persons.length - 1].dbId)
+        },
+
+        deleteFromDB(id){
+            let db = firebase.firestore();
+            db.collection("Persons").doc(id).delete();
+            this.persons = [];
+            this.selectFromDB();
+        },
+
+        deleteFromSortedDB(id){
+            let db = firebase.firestore();
+            db.collection("Persons").doc(id).delete();
+            this.persons = [];
+            this.selectFromDB();
+            if (this.sortingCurrently == "firstname"){
+                this.sortColumnFirstname();
+            }else if (this.sortingCurrently == "lastname"){
+                this.sortColumnLastname();
+            }else if (this.sortingCurrently == "email"){
+                this.sortColumnEmail();
+            
+            }else if (this.sortingCurrently == "birthday"){
+
+            }
         }
 
+    },
 
-        // uploadImage(e){
-        //     const selectedImage = e.target.files[0];
-        //     this.convertImg(selectedImage);
-        //     console.log(this.image)
-        // },
-        // convertImg(fileObj) {
-        //     const reader = new FileReader();
-
-        //     reader.onload = (e) => {
-        //         this.image = e.target.result;
-        //     };
-        //     reader.readAsBinaryString(fileObj)
-        
-        // uploadImage: function() {    
-        //     var file = document
-        //       .querySelector('input[type=file]')
-        //       .files[0];
-        //     var reader = new FileReader();
-        //     reader.onload = function(e) {
-        //       vm.imageSrc = e.target.result             
-        //     };
-        //     reader.onerror = function(error) {
-        //       alert(error);
-        //     };
-        //     reader.readAsDataURL(file);      
-        //   }
+    beforeMount(){
+        this.selectFromDB()
     }
 });
 
 app.mount("#aici");
+
+

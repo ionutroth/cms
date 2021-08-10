@@ -6,7 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/8.9.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.9.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-firestore.js"></script>
     <script src="https://unpkg.com/vue@next" defer></script>
+
+<!-- 
+
+ TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries 
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyDgjhup4oLJqvFuyiqe89cx1Jm4FOJcVGY",
+    authDomain: "cms-project-eda4c.firebaseapp.com",
+    projectId: "cms-project-eda4c",
+    storageBucket: "cms-project-eda4c.appspot.com",
+    messagingSenderId: "605487698777",
+    appId: "1:605487698777:web:390ade14444d9c9f7b7248"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+</script> -->
+
     <script src="javascript.js" defer></script>
 </head>
 <body>
@@ -44,14 +69,18 @@
                     </div>
                 </div>
 
-                <img v-bind:src="image" alt="" id="avatar"><br>
+                <img src="C:\Users\IonutRoth\Documents\GitHub\cms\user-2935373_960_720.png" alt="" id="avatar"><br>
 
                 <button class="btn btn-success mr-3" v-on:click="verifyContent()">Submit</button>
-                <button class="btn btn-warning" v-on:click="clearContent()">Clear</button>
+                <button class="btn btn-warning mr-3" v-on:click="clearContent()">Clear</button>
+                <button class="btn btn-dark" v-on:click="addToDB()">testing</button>
+                <button class="btn btn-dark" v-on:click="selectFromDB()">testing2</button>
+                <button class="btn btn-dark" v-on:click="cevaaa()">testing3</button>
             </div>
         </div>
         <div class="row justify-content-center mb-3">
-            <div class="col col-11 shadow-lg" style="overflow-x:scroll;padding-left:0px;padding-right:0px">
+            <div class="col col-11 shadow-lg" style="overflow-x:scroll;padding-left:0px;padding-right:0px;min-width:1050px;
+            max-width:1150px;">
                 <table class="table">
                     <thead class="thead-dark">
                       <tr>
@@ -100,26 +129,26 @@
                         <th scole="col" style="width:100px">Actions</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody style="border-color: green;border-style:solid;border-width:1px">
                       <tr v-for="(person,index) in persons":key="index" v-if="!sorting">
-                        <th scope="row" id="numbering">{{index + 1}}</th>
-                        <td>{{person.firstname}}</td>
-                        <td>{{person.lastname}}</td>
-                        <td>{{person.email}}</td>
-                        <td>{{person.sex}}</td>
-                        <td>{{person.date}}</td>
-                        <td>picture</td>
-                        <td><button class="btn btn-danger" v-on:click="deleteContent(index)">Delete</button></td>
+                        <th scope="row" id="numbering" style="background-color:rgb(214, 226, 214) ;">{{index + 1}}</th>
+                        <td class="rowww">{{person.firstname}}</td>
+                        <td class="rowww">{{person.lastname}}</td>
+                        <td class="rowww">{{person.email}}</td>
+                        <td class="rowww">{{person.sex}}</td>
+                        <td class="rowww">{{person.date}}</td>
+                        <td class="rowww"><img v-bind:src="person.image" alt="" style="width:100px;height:100px; border-radius: 50%;"></td>
+                        <td class="rowww"><button class="btn btn-danger" v-on:click="deleteFromDB(person.dbId)">Delete</button></td>
                       </tr>
                       <tr v-for="(person,index) in sortedPersons":key="index" v-if="sorting">
                         <th scope="row" id="numbering">{{index + 1}}</th>
-                        <td>{{person.firstname}}</td>
-                        <td>{{person.lastname}}</td>
-                        <td>{{person.email}}</td>
-                        <td>{{person.sex}}</td>
-                        <td>{{person.date}}</td>
-                        <td>picture</td>
-                        <td><button class="btn btn-danger" v-on:click="deleteContent(index)">Delete</button></td>
+                        <td class="rowww">{{person.firstname}}</td>
+                        <td class="rowww">{{person.lastname}}</td>
+                        <td class="rowww">{{person.email}}</td>
+                        <td class="rowww">{{person.sex}}</td>
+                        <td class="rowww">{{person.date}}</td>
+                        <td class="rowww">picture</td>
+                        <td class="rowww"><button class="btn btn-danger" v-on:click="deleteSortedContent(person.dbId)">Delete</button></td>
                       </tr>
                     </tbody>
                 </table>

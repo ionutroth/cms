@@ -18,6 +18,7 @@ td,#numbering{
 }
 
 #avatar{
+    padding:1px;
     width:250px;
     height: 250px;
     border-radius: 50%;
@@ -41,6 +42,7 @@ td,#numbering{
 
 .table{
     min-width:1050px;
+    max-width:1150px;
     padding-bottom:0px;
     margin-bottom: 0px;
     margin-left:0px;
@@ -56,9 +58,16 @@ td,#numbering{
 }
 
 #stop, #start{
-    border-radius: 10%;
+    border-radius: 10px;
     outline: none;
     width:70px;
     display: inline; 
     float:left
+}
+
+.rowww{
+    max-width:170px;
+    background-color: rgb(214, 226, 214);
+    text-align: center;
+    overflow: hidden;
 }
