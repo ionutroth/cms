@@ -41,11 +41,10 @@ td,#numbering{
 }
 
 .table{
-    min-width:1050px;
-    max-width:1150px;
-    padding-bottom:0px;
-    margin-bottom: 0px;
-    margin-left:0px;
+    min-width: 1150px;
+    width:100%;
+    vertical-align: middle !important
+;
     
 }
 
@@ -65,9 +64,39 @@ td,#numbering{
     float:left
 }
 
-.rowww{
-    max-width:170px;
-    background-color: rgb(214, 226, 214);
+
+
+#firstNameSearch,#lastNameSearch,#emailSearch,#dateStartSearch,#dateEndSearch{
+    width:400px
+}
+
+#sortSearchFields{
+    background-color: #212529;
+    color: white; 
+    padding-bottom: 20px;
+}
+
+#sortColumns{
+    background-color: #3f474e;
+    color: white; 
+    padding-bottom: 20px;
+}
+
+#table-div{
+    overflow-x:scroll;
+    padding-left:0px;
+    padding-right:0px;
+    width:1150px
+}
+
+th{
     text-align: center;
-    overflow: hidden;
+    vertical-align: middle;
+    background-color: rgb(214, 226, 214);
+}
+
+td{
+    text-align: center;
+    vertical-align: middle;
+    background-color: rgb(214, 226, 214);
 }

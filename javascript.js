@@ -8,16 +8,11 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+let db = firebase.firestore();
 
 const app = Vue.createApp({
     data(){
         return {
-            // persons:[
-            //     {firstname:"Bond", lastname:"James", email:"james@bond.com", sex:"y", date:"1999 July 17", image:"C:\\Users\\IonutRoth\\Documents\\GitHub\\cms\\user-2935373_960_720.png"},
-            //     {firstname:"Trump", lastname:"Donald", email:"trump@maga.com", sex:"d", date:"1970 April 17", image:"C:\\Users\\IonutRoth\\Documents\\GitHub\\cms\\user-2935373_960_720.png"},
-            //     {firstname:"Alah", lastname:"Akbar", email:"mia@khalifa.com", sex:"f", date:"1969 March 17", image:"C:\\Users\\IonutRoth\\Documents\\GitHub\\cms\\user-2935373_960_720.png"},
-            //     {firstname:"Alah", lastname:"Aakbar", email:"memri@tv.com", sex:"m", date:"2020 Jan 17", image:"C:\\Users\\IonutRoth\\Documents\\GitHub\\cms\\user-2935373_960_720.png"}
-            // ],
             persons:[],
             sortedPersons:[],
             sorting:false,
@@ -33,7 +28,18 @@ const app = Vue.createApp({
             lastnameVerification:"false",
             emailVerification:"false",
             dateVerification:"false",
-            testarray:[]
+            testarray:[],
+            firstNameSearch:"",
+            lastNameSearch:"",
+            emailSearch:"",
+            dateStartSearch:"",
+            dateEndSearch:"",
+            emailModal:"",
+            firstnameModal:"",
+            lastnameModal:"",
+            dateModal:"",
+            sexModal:"",
+            editElementId:""
         };
     },
     methods:{
@@ -160,6 +166,55 @@ const app = Vue.createApp({
             }
         },
 
+        //get persons
+        async searchSortPersons(){
+            this.persons = [];
+            const snapshot = await db.collection("Persons").get()
+            return snapshot.docs.map(doc => {
+                var validRow = "true";
+                //search selection in firstname field
+                if(this.firstNameSearch != ""){
+                    var rowFirstname = doc.data().firstname.toLowerCase();
+                    var selectionFirstname = this.firstNameSearch.toLowerCase();
+                    if (rowFirstname.search(selectionFirstname) == -1){
+                        validRow = "false";
+                    }    
+                }
+                //search selection in lastname field
+                if(this.lastNameSearch != ""){
+                    var rowLastname = doc.data().lastname.toLowerCase();
+                    var selectionLastname = this.lastNameSearch.toLowerCase();
+                    if (rowLastname.search(selectionLastname) == -1){
+                        validRow = "false";
+                    }   
+                }
+                //search selection in email field
+                if(this.emailSearch != ""){
+                    var rowEmail = doc.data().email.toLowerCase();
+                    var selectionEmail = this.emailSearch.toLowerCase();
+                    if (rowEmail.search(selectionEmail) == -1){
+                        validRow = "false";
+                    }
+                    // console.log(this.emailSearch, )
+                }
+                //insert row in persons as object
+                if (validRow == "true"){
+                    this.persons.push(doc.data());
+                    this.persons[this.persons.length - 1].dbId = doc.id;
+                } 
+            })
+        },
+
+        //clear all search fields
+        clearSearchFields(){
+            this.emailSearch = "";
+            this.firstNameSearch = "";
+            this.lastNameSearch = "";
+            this.dateStartSearch = "";
+            this.dateEndSearch = ""
+        },
+
+        //clear all form fields
         clearContent(){
             this.firstname="";
             this.lastname="";
@@ -167,11 +222,6 @@ const app = Vue.createApp({
             this.date="";
             this.image="C:\\Users\\IonutRoth\\Documents\\GitHub\\cms\\user-2935373_960_720.png";
             this.sex="m";
-        },
-
-        deleteSortedContent(index, ogIndex){
-            this.persons.splice(ogIndex,1);
-            this.sortedPersons.splice(index,1);
         },
 
         uploadImage: function(){
@@ -187,6 +237,7 @@ const app = Vue.createApp({
             reader.readAsDataURL(selectedFile);
         },
 
+        //sort persons by firstname by alphabet
         sortColumnFirstname(){
             var rowsArray = [];
             var rowsArray2 = [];
@@ -337,7 +388,7 @@ const app = Vue.createApp({
             }
         },
 
-        selectFemale(){
+        sortColumnFemale(){
             var rowsArray = [];
             var tablecopy = this.persons;
             this.persons.forEach(function (person,index){
@@ -358,7 +409,7 @@ const app = Vue.createApp({
             }
         },
 
-        selectMale(){
+        sortColumnMale(){
             var rowsArray = [];
             var tablecopy = this.persons;
             this.persons.forEach(function (person,index){
@@ -379,50 +430,6 @@ const app = Vue.createApp({
             }
         },
 
-        searchFirstname(){
-            var rowsArray = [];
-            var tablecopy = this.persons;
-            var selection = document.getElementById("firstnameinput").value.toLowerCase();
-            this.persons.forEach(function(person, index){
-                if(person.firstname.toLowerCase().search(selection) != -1){
-                    rowsArray.push(tablecopy[index])
-                }
-            })
-            this.sortedPersons = JSON.parse(JSON.stringify(rowsArray))
-            if (this.sorting == false){
-                this.sorting = !this.sorting
-            }
-        },
-
-        searchLastname(){
-            var rowsArray = [];
-            var tablecopy = this.persons;
-            var selection = document.getElementById("lastnameinput").value.toLowerCase();
-            this.persons.forEach(function(person, index){
-                if(person.lastname.toLowerCase().search(selection) != -1){
-                    rowsArray.push(tablecopy[index])
-                }
-            })
-            this.sortedPersons = JSON.parse(JSON.stringify(rowsArray))
-            if (this.sorting == false){
-                this.sorting = !this.sorting
-            }
-        },
-
-        searchEmail(){
-            var rowsArray = [];
-            var tablecopy = this.persons;
-            var selection = document.getElementById("emailinput").value.toLowerCase();
-            this.persons.forEach(function(person, index){
-                if(person.email.toLowerCase().search(selection) != -1){
-                    rowsArray.push(tablecopy[index])
-                }
-            })
-            this.sortedPersons = JSON.parse(JSON.stringify(rowsArray))
-            if (this.sorting == false){
-                this.sorting = !this.sorting
-            }
-        },
 
         searchBirthday(){
             var rowsArray = [];
@@ -441,9 +448,9 @@ const app = Vue.createApp({
             }
         },
 
-        addToDB(){
-            let cloudDB = firebase.firestore();
-            cloudDB.collection("Persons").add({
+        //add element to db
+        async addToDB(){
+            await db.collection("Persons").add({
                 firstname: this.firstname,
                 lastname: this.lastname,
                 email: this.email,
@@ -451,51 +458,57 @@ const app = Vue.createApp({
                 date: this.date,
                 image: this.image
                 }
-            ).then(function (docRef){
-                console.log("written with Id:",docRef.id)
-                }
-            ).catch(function(error){
-                console.error("eroare", error)
+            ).then(function (){
+                this.persons=[];
+                this.selectFromDB()
             })
         },
         
+        //get all stuff from db
         async selectFromDB(){
-            let db = firebase.firestore();
+            this.persons = [];
             const snapshot = await db.collection("Persons").get()
             return snapshot.docs.map(doc => {
                 this.persons.push(doc.data());
                 this.persons[this.persons.length - 1].dbId = doc.id;
-                console.log(this.persons);
+                // console.log(this.persons);
             })
         },
 
-        cevaaa(){
-            console.log(this.persons[this.persons.length - 1].dbId)
-        },
-
-        deleteFromDB(id){
-            let db = firebase.firestore();
-            db.collection("Persons").doc(id).delete();
-            this.persons = [];
+        //delete element from db and refresh
+        async deleteFromDB(id){
+            await db.collection("Persons").doc(id).delete();
             this.selectFromDB();
         },
 
-        deleteFromSortedDB(id){
-            let db = firebase.firestore();
-            db.collection("Persons").doc(id).delete();
-            this.persons = [];
-            this.selectFromDB();
-            if (this.sortingCurrently == "firstname"){
-                this.sortColumnFirstname();
-            }else if (this.sortingCurrently == "lastname"){
-                this.sortColumnLastname();
-            }else if (this.sortingCurrently == "email"){
-                this.sortColumnEmail();
+        //update element from db and refresh
+        async updatePersonModal(){
+            var idEdit = this.editElementId;
+            await db.collection("Persons").doc(idEdit).update({
+                firstname: this.firstnameModal,
+                lastname: this.lastnameModal,
+                email: this.emailModal,
+                sex: this.sexModal,
+                date: this.dateModal,
+            }).then(this.selectFromDB())
             
-            }else if (this.sortingCurrently == "birthday"){
+        },
 
-            }
-        }
+        //get info for the person that undergoes editing 
+        async loadPersonModal(id){
+            this.editElementId = id;
+            console.log(this.editElementId);
+            const snapshot = await db.collection("Persons").doc(id);
+            snapshot.get().then(doc =>{
+                console.log(doc.data())
+                this.sexModal = doc.data().sex;
+                this.firstnameModal = doc.data().firstname;
+                this.lastnameModal = doc.data().lastname;
+                this.lastname = doc.data().lastname;
+                this.emailModal = doc.data().email;
+                this.dateModal = doc.data().date;
+            })
+        },
 
     },
 
@@ -505,5 +518,3 @@ const app = Vue.createApp({
 });
 
 app.mount("#aici");
-
-
