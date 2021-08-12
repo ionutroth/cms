@@ -61,7 +61,7 @@
         </div>
 
         <div class="row justify-content-center mb-3">
-            <div class="col col-4 shadow-lg" id="sortSearchFields">
+            <div class="col col-11 col-sm-10 col-md-5 col-lg-4 col-xl-4 shadow-lg" id="sortSearchFields">
                 <h3>Sort by keywords</h3>
                 <div class="btn-group">
                     <button class="btn btn-info" v-on:click="searchSortPersons()">Search</button>
@@ -69,34 +69,33 @@
                 </div>
                 <br>
                 <label for="firstNameSearch">Search by firstname</label>
-                <input type="text" class="form-control" name="firstNameSearch" id="firstNameSearch" v-model="firstNameSearch">
+                <input type="text" class="form-control" name="firstNameSearch" id="firstNameSearch" v-model="firstNameSearch" style="margin:auto; width:80%; min-width:250px">
                 <label for="lastNameSearch">Search by lastname</label>
-                <input type="text" class="form-control" name="lastNameSearch" id="lastNameSearch" v-model="lastNameSearch">
+                <input type="text" class="form-control" name="lastNameSearch" id="lastNameSearch" v-model="lastNameSearch" style="margin:auto; width:80%; min-width:250px">
                 <label for="emailSearch">Search by email</label>
-                <input type="text" class="form-control" name="emailSearch" id="emailSearch" v-model="emailSearch">
+                <input type="text" class="form-control" name="emailSearch" id="emailSearch" v-model="emailSearch" style="margin:auto; width:80%; min-width:250px">
                 <label for="dateStartSearch">Search by date-start</label>
-                <input type="date"  name="dateStartSearch" id="dateStartSearch" v-model="dateStartSearch">
+                <input type="date"  name="dateStartSearch" id="dateStartSearch" v-model="dateStartSearch" style="margin:auto; width:80%; min-width:250px">
                 <label for="dateEndSearch">Search by date-end</label>
-                <input type="date"  name="dateEntSearch" id="dateEndSearch" v-model="dateEndSearch">
+                <input type="date"  name="dateEntSearch" id="dateEndSearch" v-model="dateEndSearch" style="margin:auto; width:80%; min-width:250px">
             </div>
-            <div class="col col-4" id="sortColumns">
+            <div class="col col-11 col-sm-10 col-md-5 col-lg-4 col-xl-4" id="sortColumns">
                 <h3>Sort by column</h3>
                 <p style="margin:0px">Currently not sorting</p>
-                <button class="btn btn-secondary mb-3" v-on:click="sortColumnFirstname()">Sort by firstname</button>
+                <button class="btn btn-secondary mb-2 mr-2" v-on:click="sortColumnFirstname()">Sort by firstname</button>
+                <button class="btn btn-secondary mb-2" v-on:click="sortColumnLastname()">Sort by lastname</button>
                 <br>
-                <button class="btn btn-secondary mb-3" v-on:click="sortColumnLastname()">Sort by lastname</button>
+                <button class="btn btn-secondary mb-2" v-on:click="sortColumnEmail()">Sort by email</button>
                 <br>
-                <button class="btn btn-secondary mb-3" v-on:click="sortColumnEmail()">Sort by email</button>
+                <button class="btn btn-secondary mb-2 mr-2" v-on:click="sortColumnSex()">Sort by sex</button>
+                <button class="btn btn-primary mb-2 mr-2" v-on:click="sortColumnMale()">Show males</button>
+                <button class="btn btn-danger mb-2 " v-on:click="sortColumnFemale()">Show females</button>
                 <br>
-                <button class="btn btn-secondary mb-3 mr-3" v-on:click="sortColumnSex()">Sort by sex</button>
-                <button class="btn btn-prymary mb-3 mr-3" v-on:click="sortColumnMale()">Show males</button>
-                <button class="btn btn-danger mb-3 " v-on:click="sortColumnFemale()">Show females</button>
+                <button class="btn btn-secondary mb-2" v-on:click="sortColumnBirthday()">Sort by birthday</button>
                 <br>
-                <button class="btn btn-secondary mb-3" v-on:click="sortColumnBirthday()">Sort by birthday</button>
+                <button class="btn btn-secondary mb-2" v-on:click="sortColumnAvatar()">Sort by avatar</button>
                 <br>
-                <button class="btn btn-secondary mb-3">Sort by avatar</button>
-                <br>
-                <button class="btn btn-info">Reset sorting</button>
+                <button class="btn btn-info" v-on:click="resetSorting()">Reset sorting</button>
                 <br>
             </div>
         </div>

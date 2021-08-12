@@ -129,15 +129,20 @@ const app = Vue.createApp({
             }
 
             if ((this.dateVerification == "true")&&(this.emailVerification == "true")&&(this.lastnameVerification == "true")&&(this.firstnameVerification == "true")){
-                let selectedFile = document.querySelector('input[type=file]').files[0];
-                let reader = new FileReader();
-                reader.onload = function(e){
-                    this.image = e.target.result;
-                }.bind(this)
-                reader.onerror = function(error){
+                if (this.image != "C:\\Users\\IonutRoth\\Documents\\GitHub\\cms\\user-2935373_960_720.png"){
+                    let selectedFile = document.querySelector('input[type=file]').files[0];
+                    let reader = new FileReader();
+                    reader.onload = function(e){
+                        this.image = e.target.result;
+                    }.bind(this)
+                    reader.onerror = function(error){
                     alert(error);
                 }
                 reader.readAsDataURL(selectedFile);
+                }else{
+                    this.image = "C:\\Users\\IonutRoth\\Documents\\GitHub\\cms\\user-2935373_960_720.png"
+                }
+                
                 console.log(this.image)
                 this.addToDB()
             }else{
@@ -254,7 +259,7 @@ const app = Vue.createApp({
             var rowsArray3 = [];
             var tablecopy = this.persons
             this.persons.forEach(function (person,index){
-                rowsArray.push(person.firstname + "_" + index)
+                rowsArray.push(person.firstname.toLowerCase() + "_" + index)
             });
             rowsArray.sort();
             rowsArray.forEach(function (item){
@@ -262,9 +267,6 @@ const app = Vue.createApp({
             });
             rowsArray2.forEach(function (item){
                 rowsArray3.push(tablecopy[item])
-            });
-            rowsArray3.forEach(function (element, index){
-                element.ogIndex = rowsArray2[index];
             });
             this.sortedPersons = JSON.parse(JSON.stringify(rowsArray3))
             if (this.sortingCurrently == "firstname"){
@@ -287,7 +289,7 @@ const app = Vue.createApp({
             var rowsArray3 = [];
             var tablecopy = this.persons
             this.persons.forEach(function (person,index){
-                rowsArray.push(person.lastname + "_" + index)
+                rowsArray.push(person.lastname.toLowerCase() + "_" + index)
             });
             rowsArray.sort();
             rowsArray.forEach(function (item){
@@ -316,7 +318,7 @@ const app = Vue.createApp({
             var rowsArray3 = [];
             var tablecopy = this.persons
             this.persons.forEach(function (person,index){
-                rowsArray.push(person.email + "_" + index)
+                rowsArray.push(person.email.toLowerCase() + "_" + index)
             });
             rowsArray.sort();
             rowsArray.forEach(function (item){
@@ -377,6 +379,8 @@ const app = Vue.createApp({
             this.persons.forEach(function (person,index){
                 rowsArray.push(person.date + "_" + index)
             });
+
+            console.log(rowsArray,rowsArray.sort())
             rowsArray.sort();
             rowsArray.forEach(function (item){
                 rowsArray2.push(parseInt(item.split("_")[1]))
@@ -417,6 +421,40 @@ const app = Vue.createApp({
                 }
                 console.log(this.sortingCurrently, this.sorting);
             }
+        },
+
+        sortColumnAvatar(){
+            let rowsArray = [];
+            let rowsArray2 = [];
+            let rowsArray3 = [];
+            let tablecopy = this.persons
+            this.persons.forEach(function (person,index){
+                rowsArray.push(person.image + "_" + index)
+            })
+            console.log(rowsArray)
+            rowsArray.sort((a,b) => a.length - b.length);
+            rowsArray.forEach(function (item){
+                rowsArray2.push(parseInt(item.split("_")[-1]))
+            });
+            
+            rowsArray2.forEach(function (item){
+                rowsArray3.push(tablecopy[item])
+            });
+            
+            this.sortedPersons = JSON.parse(JSON.stringify(rowsArray3))
+            
+            if (this.sortingCurrently == "avatar"){
+                this.sorting = !this.sorting;
+                console.log(this.sortingCurrently, this.sorting);
+                this.sortingCurrently = "";
+            }
+            else{
+                this.sortingCurrently = "avatar";
+                if (this.sorting = false){
+                    this.sorting = !this.sorting
+                }
+            }
+            console.log("merge")
         },
 
         sortColumnMale(){
@@ -544,11 +582,9 @@ const app = Vue.createApp({
             })
         },
 
-
-
-        // testing(){
-        //         this.imageModal = "C:\\Users\\IonutRoth\\Documents\\GitHub\\cms\\CheHigh.jpg"
-        //     },
+        resetSorting(){
+            this.sorting = !this.sorting
+        }
 
     },
     beforeMount(){

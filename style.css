@@ -54,8 +54,8 @@ td,#numbering{
 .table{
     min-width: 1150px;
     width:100%;
-    vertical-align: middle !important
-;
+    vertical-align: middle !important;
+    margin-bottom: 0px;
     
 }
 
@@ -75,8 +75,6 @@ td,#numbering{
     float:left
 }
 
-
-
 #firstNameSearch,#lastNameSearch,#emailSearch,#dateStartSearch,#dateEndSearch{
     width:400px
 }
@@ -85,12 +83,14 @@ td,#numbering{
     background-color: #212529;
     color: white; 
     padding-bottom: 20px;
+    text-align: center;
 }
 
 #sortColumns{
     background-color: #3f474e;
     color: white; 
     padding-bottom: 20px;
+    text-align: center;
 }
 
 #table-div{
