@@ -39,6 +39,7 @@ const app = Vue.createApp({
             lastnameModal:"",
             dateModal:"",
             sexModal:"",
+            imageModal:"",
             editElementId:""
         };
     },
@@ -127,40 +128,18 @@ const app = Vue.createApp({
                 console.log("date error")
             }
 
-            let months = {
-                "01":"January",
-                "02":"February",
-                "03":"March",
-                "04":"April",
-                "05":"May",
-                "06":"June",
-                "07":"July",
-                "08":"August",
-                "09":"September",
-                "10":"October",
-                "11":"November",
-                "12":"December"
-            };
-
-            let formatedDate = this.date.split("-")[0] + " " + months[this.date.split("-")[1]] + " " + this.date.split("-")[2];
-            
             if ((this.dateVerification == "true")&&(this.emailVerification == "true")&&(this.lastnameVerification == "true")&&(this.firstnameVerification == "true")){
-                // console.log(this.firstname,this.lastname,this.email,this.sex, this.date, this.image);
-                this.persons.push({firstname: this.firstname, lastname: this.lastname, email:this.email, sex:this.sex, date:formatedDate, image:this.image});
-                var selectedFile = document.querySelector('input[type=file]').files[0];
-                var reader = new FileReader();
+                let selectedFile = document.querySelector('input[type=file]').files[0];
+                let reader = new FileReader();
                 reader.onload = function(e){
-                    this.persons[this.persons.length - 1].image = e.target.result;
-                }.bind(this);
+                    this.image = e.target.result;
+                }.bind(this)
                 reader.onerror = function(error){
                     alert(error);
                 }
                 reader.readAsDataURL(selectedFile);
                 console.log(this.image)
-                this.addToDB();
-                this.persons = [];
-                this.selectFromDB();
-                this.clearContent();
+                this.addToDB()
             }else{
                 console.log("error");
             }
@@ -195,8 +174,24 @@ const app = Vue.createApp({
                     if (rowEmail.search(selectionEmail) == -1){
                         validRow = "false";
                     }
-                    // console.log(this.emailSearch, )
                 }
+                //search selection by date start
+                if (this.dateStartSearch != ""){
+                    var rowDate = Date.parse(doc.data().date)
+                    var start = Date.parse(this.dateStartSearch)
+                    if (start > rowDate){
+                        validRow = "false";
+                    }
+                }
+                //search selection by date end
+                if (this.dateEndSearch != ""){
+                    var rowDate = Date.parse(doc.data().date)
+                    var end = Date.parse(this.dateEndSearch)
+                    if (end < rowDate){
+                        validRow = "false";
+                    }
+                }
+
                 //insert row in persons as object
                 if (validRow == "true"){
                     this.persons.push(doc.data());
@@ -222,15 +217,30 @@ const app = Vue.createApp({
             this.date="";
             this.image="C:\\Users\\IonutRoth\\Documents\\GitHub\\cms\\user-2935373_960_720.png";
             this.sex="m";
+            document.getElementById("avatar").src=this.image;
         },
 
-        uploadImage: function(){
-            var selectedFile = document.querySelector('input[type=file]').files[0];
-            var reader = new FileReader();
+        // change image on form
+        uploadImage(){
+            let selectedFile = document.querySelector('input[type=file]').files[0];
+            let reader = new FileReader();
             reader.onload = function(e){
                 this.image = e.target.result;
                 document.getElementById("avatar").src=this.image;
             }.bind(this);
+            reader.onerror = function(error){
+                alert(error);
+            };
+            reader.readAsDataURL(selectedFile);
+        },
+
+        uploadImageModal(){
+            let selectedFile = document.querySelector("#imageModal").files[0];
+            let reader = new FileReader();
+            reader.onload = function(e){ 
+                this.imageModal= e.target.result;
+                document.getElementById("avatarModal").src=this.imageModal;
+            }.bind(this)
             reader.onerror = function(error){
                 alert(error);
             };
@@ -430,24 +440,6 @@ const app = Vue.createApp({
             }
         },
 
-
-        searchBirthday(){
-            var rowsArray = [];
-            var tablecopy = this.persons;
-            var start = parseInt(document.getElementById("start").value);
-            var stop = parseInt(document.getElementById("stop").value);
-
-            this.persons.forEach(function(person, index){
-                if ((parseInt(person.date.split(" ")[0]) < stop) && (parseInt(person.date.split(" ")[0]) > start)){
-                    rowsArray.push(tablecopy[index])
-                }
-            })
-            this.sortedPersons = JSON.parse(JSON.stringify(rowsArray))
-            if (this.sorting == false){
-                this.sorting = !this.sorting
-            }
-        },
-
         //add element to db
         async addToDB(){
             await db.collection("Persons").add({
@@ -461,7 +453,8 @@ const app = Vue.createApp({
             ).then(function (){
                 this.persons=[];
                 this.selectFromDB()
-            })
+                this.clearContent()
+            }.bind(this))
         },
         
         //get all stuff from db
@@ -471,6 +464,24 @@ const app = Vue.createApp({
             return snapshot.docs.map(doc => {
                 this.persons.push(doc.data());
                 this.persons[this.persons.length - 1].dbId = doc.id;
+                
+                let months = {
+                    "01":"January",
+                    "02":"February",
+                    "03":"March",
+                    "04":"April",
+                    "05":"May",
+                    "06":"June",
+                    "07":"July",
+                    "08":"August",
+                    "09":"September",
+                    "10":"October",
+                    "11":"November",
+                    "12":"December"
+                };
+    
+                let formatedDate = doc.data().date.split("-")[0] + " " + months[doc.data().date.split("-")[1]] + " " + doc.data().date.split("-")[2];
+                this.persons[this.persons.length - 1].date = formatedDate
                 // console.log(this.persons);
             })
         },
@@ -484,14 +495,36 @@ const app = Vue.createApp({
         //update element from db and refresh
         async updatePersonModal(){
             var idEdit = this.editElementId;
+            let selectedFile = document.querySelector("#imageModal").files[0];
+            let reader = new FileReader();
+            reader.onload = function(e){ 
+                this.imageModal= e.target.result;
+            }.bind(this)
+            reader.onerror = function(error){
+                alert(error);
+            };
+            reader.readAsDataURL(selectedFile);
             await db.collection("Persons").doc(idEdit).update({
                 firstname: this.firstnameModal,
                 lastname: this.lastnameModal,
                 email: this.emailModal,
                 sex: this.sexModal,
                 date: this.dateModal,
-            }).then(this.selectFromDB())
-            
+                image: this.imageModal
+            }).then(function(){
+                this.selectFromDB()
+                this.clearModalInfo()
+            }.bind(this))
+        },
+
+        //clear modal variables
+        clearModalInfo(){
+            this.firstnameModal = "",
+            this.lastnameModal = "",
+            this.emailModal = "",
+            this.sexModal = "",
+            this.date = "",
+            this.imageModal = ""
         },
 
         //get info for the person that undergoes editing 
@@ -507,11 +540,17 @@ const app = Vue.createApp({
                 this.lastname = doc.data().lastname;
                 this.emailModal = doc.data().email;
                 this.dateModal = doc.data().date;
+                this.imageModal = doc.data().image;
             })
         },
 
-    },
 
+
+        // testing(){
+        //         this.imageModal = "C:\\Users\\IonutRoth\\Documents\\GitHub\\cms\\CheHigh.jpg"
+        //     },
+
+    },
     beforeMount(){
         this.selectFromDB()
     }

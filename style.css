@@ -28,6 +28,17 @@ td,#numbering{
     margin-bottom: 3%;
 }
 
+#avatarModal{
+    padding:1px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border-width: 2px;
+    border-color: black;
+    border-style: solid;
+    margin-bottom: 3%;
+}
+
 .txt-input{
     width:80%;
     border-radius: 5px;

@@ -57,9 +57,6 @@
 
                 <button class="btn btn-success mr-3" v-on:click="verifyContent()">Submit</button>
                 <button class="btn btn-warning mr-3" v-on:click="clearContent()">Clear</button>
-                <button class="btn btn-dark" v-on:click="addToDB()">testing</button>
-                <button class="btn btn-dark" v-on:click="selectFromDB()">testing2</button>
-                <button class="btn btn-dark" v-on:click="cevaaa()">testing3</button>
             </div>
         </div>
 
@@ -78,9 +75,9 @@
                 <label for="emailSearch">Search by email</label>
                 <input type="text" class="form-control" name="emailSearch" id="emailSearch" v-model="emailSearch">
                 <label for="dateStartSearch">Search by date-start</label>
-                <input type="text" class="form-control" name="dateStartSearch" id="dateStartSearch" v-model="dateStartSearch">
+                <input type="date"  name="dateStartSearch" id="dateStartSearch" v-model="dateStartSearch">
                 <label for="dateEndSearch">Search by date-end</label>
-                <input type="text" class="form-control" name="dateEntSearch" id="dateEndSearch" v-model="dateEndSearch">
+                <input type="date"  name="dateEntSearch" id="dateEndSearch" v-model="dateEndSearch">
             </div>
             <div class="col col-4" id="sortColumns">
                 <h3>Sort by column</h3>
@@ -106,7 +103,7 @@
 
         <div class="row justify-content-center mb-3">
             <div class="col col-10 shadow-lg" id="table-div">
-                <table class="table" style="vertical-align: middle;">
+                <table class="table">
                     <thead class="thead-dark">
                       <tr>
                         <th scope="col">Nr.</th>
@@ -170,7 +167,7 @@
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="text-align: center;">
                     <label for="firstnameModal">Firstname</label>
                     <input type="text" class="form-control" name="firstnameModal" v-model="firstnameModal">
                     <label for="firstnameModal">Lastname</label>
@@ -186,10 +183,15 @@
                     </select>
                     <label for="dateModal">Data</label>
                     <input type="date" class="form-control" name="dateModal" v-model="dateModal">
+                    <br>
+                    <input type="file" id="imageModal" name="imageModal" v-on:change="uploadImageModal">
+                    <br>
+                    <img v-bind:src="imageModal" alt="" id="avatarModal">
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                   <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="updatePersonModal()">Save changes</button>
+                  <button type="button" class="btn btn-primary"  v-on:click="testing()">test</button>
                 </div>
               </div>
             </div>
