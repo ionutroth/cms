@@ -162,12 +162,14 @@ const app = Vue.createApp({
 
         //get persons sorted
         async searchSortPersons(){
+            
             this.persons = [];
             if (this.sorting = true){
                 this.sorting = false;
             }
             const snapshot = await db.collection("Persons").get()
-            return snapshot.docs.map(doc => {
+            
+            snapshot.docs.map(doc => {
                 var validRow = "true";
                 //search selection in firstname field
                 if(this.firstNameSearch != ""){
@@ -175,6 +177,7 @@ const app = Vue.createApp({
                     var selectionFirstname = this.firstNameSearch.toLowerCase();
                     if (rowFirstname.search(selectionFirstname) == -1){
                         validRow = "false";
+                        
                     }    
                 }
                 //search selection in lastname field
@@ -214,8 +217,19 @@ const app = Vue.createApp({
                 if (validRow == "true"){
                     this.persons.push(doc.data());
                     this.persons[this.persons.length - 1].dbId = doc.id;
-                } 
-            })
+                }
+
+            }).then(this.showSorted())
+        },
+
+        showSorted(){
+            this.pageIndex = 0
+            this.visiblePersons = this.persons.slice(this.pageIndex*5 , (this.pageIndex+1)*5)
+            if (this.persons.lenth%5 != 0){
+                this.pageNumber = parseInt(this.persons.length/5) +1
+            }else{
+                this.pageNumber = parseInt(this.persons.length/5)
+            }
         },
 
         //clear all search fields
@@ -617,7 +631,7 @@ const app = Vue.createApp({
         nextPage(){
             if (this.pageIndex < this.pageNumber -1){
                 this.pageIndex = this.pageIndex + 1;
-                if (this.sorting = false){
+                if (this.sorting == false){
                     this.visiblePersons = this.persons.slice(this.pageIndex*5, (this.pageIndex+1)*5)
                 }else{
                     this.visiblePersons = this.sortedPersons.slice(this.pageIndex*5, (this.pageIndex+1)*5)
@@ -629,7 +643,7 @@ const app = Vue.createApp({
         prevPage(){
             if (this.pageIndex > 0){
                 this.pageIndex = this.pageIndex - 1;
-                if (this.sorting = false){
+                if (this.sorting == false){
                     this.visiblePersons = this.persons.slice(this.pageIndex*5, (this.pageIndex+1)*5)
                 }else{
                     this.visiblePersons = this.sortedPersons.slice(this.pageIndex*5, (this.pageIndex+1)*5)
@@ -640,7 +654,7 @@ const app = Vue.createApp({
 
         firstPage(){
             this.pageIndex = 0;
-            if (this.sorting = false){
+            if (this.sorting == false){
                 this.visiblePersons = this.persons.slice(this.pageIndex*5, (this.pageIndex+1)*5)
             }else{
                 this.visiblePersons = this.sortedPersons.slice(this.pageIndex*5, (this.pageIndex+1)*5)
@@ -648,8 +662,8 @@ const app = Vue.createApp({
         },
 
         lastPage(){
-            this.pageIndex = this.pageNumber;
-            if (this.sorting = false){
+            this.pageIndex = this.pageNumber -1;
+            if (this.sorting == false){
                 this.visiblePersons = this.persons.slice(this.pageIndex*5, (this.pageIndex+1)*5)
             }else{
                 this.visiblePersons = this.sortedPersons.slice(this.pageIndex*5, (this.pageIndex+1)*5)
