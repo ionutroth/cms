@@ -21,7 +21,7 @@
 <body>
     <div class="container-flex" id="aici">
         <div class="row justify-content-center mt-4 mb-4" >
-            <div class="col col-10 col-sm-10 col-md-10 col-lg-8 col-xl-6  shadow" id="form-box">
+            <div class="col col-11 col-sm-11 col-md-10 col-lg-8 col-xl-6  shadow" id="form-box">
                 <div class="form-group w-75 mx-auto">
                     <label for="firstname">Firstname</label>
                     <input type="text" v-model="firstname" class="form-control" id="firstname" placeholder="Enter your firstname" required>
@@ -52,9 +52,7 @@
                         <input type="file" id="image" name="image" v-on:change="uploadImage">
                     </div>
                 </div>
-
                 <img src="C:\Users\IonutRoth\Documents\GitHub\cms\user-2935373_960_720.png" alt="" id="avatar"><br>
-
                 <button class="btn btn-success mr-3" v-on:click="verifyContent()">Submit</button>
                 <button class="btn btn-warning mr-3" v-on:click="clearContent()">Clear</button>
             </div>
@@ -81,7 +79,8 @@
             </div>
             <div class="col col-11 col-sm-10 col-md-5 col-lg-4 col-xl-4" id="sortColumns">
                 <h3>Sort by column</h3>
-                <p style="margin:0px">Currently not sorting</p>
+                <br>
+                <br>
                 <button class="btn btn-secondary mb-2 mr-2" v-on:click="sortColumnFirstname()">Sort by firstname</button>
                 <button class="btn btn-secondary mb-2" v-on:click="sortColumnLastname()">Sort by lastname</button>
                 <br>
@@ -100,8 +99,20 @@
             </div>
         </div>
 
+        <div class="row justify-content-center">
+            <div class="col col-12 col-sm-11 col-md-10 col-lg-8 col-xl-8" style="text-align: center;">
+                <div class="btn-group">
+                    <button class="btn btn-secondary" v-on:click="firstPage">First</button>
+                    <button class="btn btn-secondary" v-on:click="prevPage">Previuos</button>
+                    <button class="btn btn-secondary" v-on:click="nextPage">Next</button>
+                    <button class="btn btn-secondary" v-on:click="lastPage">Last</button>
+                </div>
+                <p>Page {{pageIndex + 1}} out of {{pageNumber}}</p>
+            </div>
+        </div>
+
         <div class="row justify-content-center mb-3">
-            <div class="col col-10 shadow-lg" id="table-div">
+            <div class="col col-12 col-sm-11 col-md-10 col-lg-10 col-xl-10 shadow-lg" id="table-div">
                 <table class="table">
                     <thead class="thead-dark">
                       <tr>
@@ -122,7 +133,7 @@
                       </tr>
                     </thead>
                     <tbody style="border-color: green;border-style:solid;border-width:1px">
-                      <tr v-for="(person,index) in persons":key="index" v-if="!sorting">
+                      <tr v-for="(person,index) in visiblePersons":key="index" v-if="!sorting">
                         <th scope="row" id="numbering" style="background-color:rgb(214, 226, 214) ;">{{index + 1}}</th>
                         <td class="rowww">{{person.firstname}}</td>
                         <td class="rowww">{{person.lastname}}</td>
@@ -137,7 +148,7 @@
                             <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" v-on:click="loadPersonModal(person.dbId)">Edit</button>
                         </td>
                       </tr>
-                      <tr v-for="(person,index) in sortedPersons":key="index" v-if="sorting">
+                      <tr v-for="(person,index) in visiblePersons":key="index" v-if="sorting">
                         <th scope="row" id="numbering" style="background-color:rgb(214, 226, 214) ;">{{index + 1}}</th>
                         <td class="rowww">{{person.firstname}}</td>
                         <td class="rowww">{{person.lastname}}</td>
@@ -160,13 +171,13 @@
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header" style="background-color: #3f474e;color: white;">
                   <h5 class="modal-title" id="exampleModalLabel">Edit this person</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-                <div class="modal-body" style="text-align: center;">
+                <div class="modal-body" style="text-align: center;background-color: rgb(214, 226, 214);border-bottom: solid;border-color: black;border-width: 1px;">
                     <label for="firstnameModal">Firstname</label>
                     <input type="text" class="form-control" name="firstnameModal" v-model="firstnameModal">
                     <label for="firstnameModal">Lastname</label>
@@ -187,7 +198,7 @@
                     <br>
                     <img v-bind:src="imageModal" alt="" id="avatarModal">
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" style="background-color: rgb(214, 226, 214);">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                   <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="updatePersonModal()">Save changes</button>
                   <button type="button" class="btn btn-primary"  v-on:click="testing()">test</button>

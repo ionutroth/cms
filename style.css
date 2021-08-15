@@ -104,10 +104,16 @@ th{
     text-align: center;
     vertical-align: middle;
     background-color: rgb(214, 226, 214);
+    border-bottom: solid;
+    border-color: black;
+    border-width: 1px;
 }
 
 td{
     text-align: center;
     vertical-align: middle;
     background-color: rgb(214, 226, 214);
+    border-bottom: solid;
+    border-color: black;
+    border-width: 1px;
 }

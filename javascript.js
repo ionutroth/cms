@@ -15,6 +15,7 @@ const app = Vue.createApp({
         return {
             persons:[],
             sortedPersons:[],
+            visiblePersons:[],
             sorting:false,
             sortingCurrently:"",
             firstname:"",
@@ -40,7 +41,9 @@ const app = Vue.createApp({
             dateModal:"",
             sexModal:"",
             imageModal:"",
-            editElementId:""
+            editElementId:"",
+            pageIndex:0,
+            pageNumber:0
         };
     },
     methods:{
@@ -63,12 +66,14 @@ const app = Vue.createApp({
             }else{
                 verification1 = "false";
                 console.log("v1 error", firstnameUnwantedChars);
+                alert("firstname contains unallowed chars")
             }
             if (this.firstname.length > 4){
                 verification2 = "true";
             }else{
                 verification2 = "false";
                 console.log("v2 error");
+                alert("firstname not long enough")
             }
             if ((verification2 == "true") && (verification1=="true")){
                 this.firstnameVerification = "true";
@@ -82,12 +87,14 @@ const app = Vue.createApp({
             }else{
                 verification3 = "false";
                 console.log("v3 error");
+                alert("lastname contains unallowed chars")
             }
             if (this.lastname.length > 4){
                 verification4="true";
             }else{
                 verification4="false";
                 console.log("v4 error");
+                alert("lastname not long enough")
             }
             if ((verification3 == "true") && (verification4 == "true")){
                 this.lastnameVerification = "true";
@@ -101,6 +108,7 @@ const app = Vue.createApp({
             }else{
                 verification5="false";
                 console.log("v5 error", emailUnwantedChars);
+                alert("not an email")
             }
             let emailAtChar = this.email.match(regexAt);
             if (emailAtChar == null){
@@ -114,6 +122,7 @@ const app = Vue.createApp({
             }else{
                 verification7="false";
                 console.log("v7 error");
+                alert("email not long enough")
             }
             if ((verification7 == "true") && (verification6 == "true") && (verification5 == "true")){
                 this.emailVerification = "true";
@@ -126,6 +135,7 @@ const app = Vue.createApp({
             } else{
                 this.dateVerification = "false";
                 console.log("date error")
+                alert("select a date")
             }
 
             if ((this.dateVerification == "true")&&(this.emailVerification == "true")&&(this.lastnameVerification == "true")&&(this.firstnameVerification == "true")){
@@ -150,9 +160,12 @@ const app = Vue.createApp({
             }
         },
 
-        //get persons
+        //get persons sorted
         async searchSortPersons(){
             this.persons = [];
+            if (this.sorting = true){
+                this.sorting = false;
+            }
             const snapshot = await db.collection("Persons").get()
             return snapshot.docs.map(doc => {
                 var validRow = "true";
@@ -281,6 +294,8 @@ const app = Vue.createApp({
                 console.log(this.sortingCurrently, this.sorting)
             }
             console.log(this.sortedPersons[0])
+            this.pageIndex = 0;
+            this.visiblePersons = this.sortedPersons.slice(this.pageIndex*5, (this.pageIndex + 1)*5)
         },
 
         sortColumnLastname(){
@@ -310,6 +325,8 @@ const app = Vue.createApp({
                 }
                 console.log(this.sortingCurrently, this.sorting)
             }
+            this.pageIndex = 0;
+            this.visiblePersons = this.sortedPersons.slice(this.pageIndex*5, (this.pageIndex + 1)*5)
         },
 
         sortColumnEmail(){
@@ -340,6 +357,8 @@ const app = Vue.createApp({
                 }
                 console.log(this.sortingCurrently, this.sorting)
             }
+            this.pageIndex = 0;
+            this.visiblePersons = this.sortedPersons.slice(this.pageIndex*5, (this.pageIndex + 1)*5)
         },
 
         sortColumnSex(){
@@ -369,6 +388,8 @@ const app = Vue.createApp({
                 }
                 console.log(this.sortingCurrently, this.sorting)
             }
+            this.pageIndex = 0;
+            this.visiblePersons = this.sortedPersons.slice(this.pageIndex*5, (this.pageIndex + 1)*5)
         },
 
         sortColumnBirthday(){
@@ -400,6 +421,8 @@ const app = Vue.createApp({
                 }
                 console.log(this.sortingCurrently, this.sorting);
             }
+            this.pageIndex = 0;
+            this.visiblePersons = this.sortedPersons.slice(this.pageIndex*5, (this.pageIndex + 1)*5)
         },
 
         sortColumnFemale(){
@@ -498,11 +521,11 @@ const app = Vue.createApp({
         //get all stuff from db
         async selectFromDB(){
             this.persons = [];
+            
             const snapshot = await db.collection("Persons").get()
             return snapshot.docs.map(doc => {
                 this.persons.push(doc.data());
                 this.persons[this.persons.length - 1].dbId = doc.id;
-                
                 let months = {
                     "01":"January",
                     "02":"February",
@@ -517,10 +540,14 @@ const app = Vue.createApp({
                     "11":"November",
                     "12":"December"
                 };
-    
                 let formatedDate = doc.data().date.split("-")[0] + " " + months[doc.data().date.split("-")[1]] + " " + doc.data().date.split("-")[2];
-                this.persons[this.persons.length - 1].date = formatedDate
-                // console.log(this.persons);
+                this.persons[this.persons.length - 1].date = formatedDate;
+                this.visiblePersons = this.persons.slice(this.pageIndex*5 , (this.pageIndex+1)*5)
+                if (this.persons.lenth%5 != 0){
+                    this.pageNumber = parseInt(this.persons.length/5) +1
+                }else{
+                    this.pageNumber = parseInt(this.persons.length/5)
+                }
             })
         },
 
@@ -582,8 +609,52 @@ const app = Vue.createApp({
             })
         },
 
+        //reset sorting flag
         resetSorting(){
             this.sorting = !this.sorting
+        },
+
+        nextPage(){
+            if (this.pageIndex < this.pageNumber -1){
+                this.pageIndex = this.pageIndex + 1;
+                if (this.sorting = false){
+                    this.visiblePersons = this.persons.slice(this.pageIndex*5, (this.pageIndex+1)*5)
+                }else{
+                    this.visiblePersons = this.sortedPersons.slice(this.pageIndex*5, (this.pageIndex+1)*5)
+                }
+            }
+            
+        },
+
+        prevPage(){
+            if (this.pageIndex > 0){
+                this.pageIndex = this.pageIndex - 1;
+                if (this.sorting = false){
+                    this.visiblePersons = this.persons.slice(this.pageIndex*5, (this.pageIndex+1)*5)
+                }else{
+                    this.visiblePersons = this.sortedPersons.slice(this.pageIndex*5, (this.pageIndex+1)*5)
+                }
+            }
+            
+        },
+
+        firstPage(){
+            this.pageIndex = 0;
+            if (this.sorting = false){
+                this.visiblePersons = this.persons.slice(this.pageIndex*5, (this.pageIndex+1)*5)
+            }else{
+                this.visiblePersons = this.sortedPersons.slice(this.pageIndex*5, (this.pageIndex+1)*5)
+            }
+        },
+
+        lastPage(){
+            this.pageIndex = this.pageNumber;
+            if (this.sorting = false){
+                this.visiblePersons = this.persons.slice(this.pageIndex*5, (this.pageIndex+1)*5)
+            }else{
+                this.visiblePersons = this.sortedPersons.slice(this.pageIndex*5, (this.pageIndex+1)*5)
+            }
+            
         }
 
     },
